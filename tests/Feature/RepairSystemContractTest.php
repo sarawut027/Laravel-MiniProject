@@ -174,4 +174,36 @@ class RepairSystemContractTest extends TestCase
         $response = $this->actingAs($tech)->get('/admin/dashboard');
         $response->assertStatus(403);
     }
+
+    public function test_user_cannot_view_other_user_ticket(): void
+    {
+        $otherUser = User::factory()->create(['role' => 'user']);
+        $ticket = RepairRequest::where('user_id', '!=', $otherUser->id)->first();
+
+        $response = $this->actingAs($otherUser)->get('/tickets/' . $ticket->id);
+        $response->assertStatus(403);
+    }
+
+    public function test_user_cannot_cancel_already_assigned_ticket(): void
+    {
+        $user = User::where('email', 'user@repair.test')->first();
+        $ticket = RepairRequest::where('user_id', $user->id)
+            ->whereIn('status', ['assigned', 'in_progress', 'completed'])
+            ->first();
+
+        if ($ticket) {
+            $response = $this->actingAs($user)->post('/tickets/' . $ticket->id . '/cancel');
+            $response->assertSessionHas('error');
+            $this->assertNotEquals('cancelled', $ticket->fresh()->status);
+        }
+    }
+
+    public function test_admin_can_view_tickets_and_filter(): void
+    {
+        $admin = User::where('email', 'admin@repair.test')->first();
+
+        $response = $this->actingAs($admin)->get('/admin/tickets?status=pending');
+        $response->assertOk();
+        $response->assertViewHas('tickets');
+    }
 }
