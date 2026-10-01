@@ -2,7 +2,8 @@
 
 > **โครงงาน:** ระบบแจ้งซ่อมบำรุงและจัดการอุปกรณ์ภายในองค์กร (Maintenance Repair System)  
 > **เทคโนโลยี:** Laravel 12 • Blade Template Engine • Tailwind CSS • SQLite / MySQL • PHP 8.2+  
-> **วัตถุประสงค์:** ใช้ประกอบการนำเสนอโครงงาน (Presentation) ให้อาจารย์และคณะกรรมการตรวจประเมิน เพื่อแสดงสถาปัตยกรรมระบบ แผนผังฐานข้อมูล ลำดับการทำงาน (Workflows) และการทดสอบระบบอัตโนมัติ
+> **วัตถุประสงค์:** ใช้ประกอบการนำเสนอโครงงาน (Presentation) ให้อาจารย์และคณะกรรมการตรวจประเมิน เพื่อแสดงสถาปัตยกรรมระบบ แผนผังฐานข้อมูล ลำดับการทำงาน (Workflows) และการทดสอบระบบอัตโนมัติ  
+> **คู่มือเชิงลึก Laravel Framework:** [LARAVEL_GUIDE.md](LARAVEL_GUIDE.md) *(อธิบาย Request Lifecycle, MVC, Eloquent ORM, CheckRole Middleware, และแนวทางตอบคำถามอาจารย์)*
 
 ---
 

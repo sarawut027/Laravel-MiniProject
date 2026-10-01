@@ -9,14 +9,11 @@
 
 ---
 
-## 📑 เอกสารสถาปัตยกรรมและไดอะแกรมฉบับเต็ม
-👉 **อ่านเอกสารฉบับสมบูรณ์พร้อมไดอะแกรมทั้งหมดได้ที่: [SYSTEM_DOCUMENTATION.md](SYSTEM_DOCUMENTATION.md)**
-- แผนภาพ Use Case Diagram
-- แผนภาพสถาปัตยกรรมระบบ (System Architecture Diagram)
-- แผนผังฐานข้อมูล (Entity Relationship Diagram - ERD)
-- แผนภาพวงจรสถานะงานซ่อม (State Machine Lifecycle)
-- แผนภาพลำดับการทำงาน (Sequence Diagrams 4 ขั้นตอน)
-- พจนานุกรมข้อมูล (Data Dictionary)
+## 📑 เอกสารประกอบการนำเสนอ (Project Documentation)
+- 📐 **เอกสารระบบและไดอะแกรมฉบับเต็ม:** [SYSTEM_DOCUMENTATION.md](SYSTEM_DOCUMENTATION.md)  
+  *(Use Case, System Architecture, ERD, State Machine, Sequence Diagrams 4 ชุด, Data Dictionary)*
+- 🚀 **คู่มือสถาปัตยกรรมและการทำงานของ Laravel Framework:** [LARAVEL_GUIDE.md](LARAVEL_GUIDE.md)  
+  *(Request Lifecycle, MVC ในระบบ, Eloquent ORM, Middleware CheckRole, Security, Artisan CLI, แนวทางตอบคำถามอาจารย์)*
 
 ---
 
