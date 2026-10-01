@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'department',
     ];
 
     /**
@@ -44,5 +47,40 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isTechnician(): bool
+    {
+        return $this->role === 'technician';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
+
+    public function repairRequests()
+    {
+        return $this->hasMany(RepairRequest::class, 'user_id');
+    }
+
+    public function assignedTasks()
+    {
+        return $this->hasMany(RepairRequest::class, 'assigned_to');
+    }
+
+    public function repairLogs()
+    {
+        return $this->hasMany(RepairLog::class, 'user_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'user_id');
     }
 }
