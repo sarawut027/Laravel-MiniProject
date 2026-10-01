@@ -1,3 +1,4 @@
+{{-- สืบทอดโครงร่างหลักมาจาก layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'งานซ่อมที่ได้รับมอบหมาย')
@@ -5,6 +6,7 @@
 @section('content')
 <div class="space-y-6">
 
+    <!-- ส่วนหัวของหน้างานช่างซ่อม -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900">🔧 งานซ่อมที่ได้รับมอบหมาย (My Tasks)</h1>
@@ -12,7 +14,7 @@
         </div>
     </div>
 
-    <!-- Status Filter -->
+    <!-- แผงกรองสถานะงานแบบปุ่มด่วน (Quick Status Filter Pills) -->
     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <form action="{{ route('tech.tasks') }}" method="GET" class="flex flex-wrap items-center gap-3">
             <span class="text-xs font-semibold text-slate-600">กรองสถานะงาน:</span>
@@ -34,7 +36,7 @@
         </form>
     </div>
 
-    <!-- Tasks List -->
+    <!-- ตารางแสดงรายการงานที่ได้รับมอบหมาย (Tasks Table) -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         @if($tasks->count() > 0)
             <div class="overflow-x-auto">
@@ -52,6 +54,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
+                        {{-- วนลูปแสดงงานของช่าง --}}
                         @foreach($tasks as $task)
                             <tr class="hover:bg-slate-50 transition">
                                 <td class="py-3.5 px-4 font-mono font-medium text-indigo-600 whitespace-nowrap">
@@ -98,10 +101,12 @@
                 </table>
             </div>
 
+            <!-- การแบ่งหน้า (Pagination) -->
             <div class="p-4 border-t border-slate-200">
                 {{ $tasks->links() }}
             </div>
         @else
+            <!-- กรณีไม่มีงานในสถานะที่เลือก -->
             <div class="py-12 text-center">
                 <span class="text-4xl">🎉</span>
                 <p class="text-slate-600 font-medium mt-3">ไม่มีงานซ่อมค้างในสถานะนี้</p>

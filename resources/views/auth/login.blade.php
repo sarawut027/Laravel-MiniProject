@@ -1,3 +1,4 @@
+{{-- สืบทอดโครงร่างหลักมาจาก layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'เข้าสู่ระบบ')
@@ -10,9 +11,12 @@
             <p class="text-xs text-slate-500 mt-1">ระบบแจ้งซ่อมและบำรุงรักษาอุปกรณ์</p>
         </div>
 
+        {{-- ฟอร์มเข้าสู่ระบบ ส่งข้อมูลไปยัง route('login.submit') ผ่าน POST method --}}
         <form action="{{ route('login.submit') }}" method="POST" class="space-y-4">
+            {{-- ป้องกันการโจมตี CSRF --}}
             @csrf
 
+            <!-- ฟิลด์กรอกอีเมล -->
             <div>
                 <label for="email" class="block text-sm font-medium text-slate-700 mb-1">อีเมล (Email)</label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
@@ -20,6 +24,7 @@
                     placeholder="name@example.com">
             </div>
 
+            <!-- ฟิลด์กรอกรหัสผ่าน -->
             <div>
                 <label for="password" class="block text-sm font-medium text-slate-700 mb-1">รหัสผ่าน (Password)</label>
                 <input type="password" name="password" id="password" required
@@ -27,6 +32,7 @@
                     placeholder="••••••••">
             </div>
 
+            <!-- เช็คบ็อกซ์ Remember Me (จดจำการเข้าสู่ระบบ) -->
             <div class="flex items-center justify-between text-sm">
                 <label class="flex items-center">
                     <input type="checkbox" name="remember" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
@@ -34,6 +40,7 @@
                 </label>
             </div>
 
+            <!-- ปุ่มกดยืนยันการเข้าสู่ระบบ -->
             <button type="submit"
                 class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-lg shadow-sm transition">
                 เข้าสู่ระบบ
@@ -46,10 +53,13 @@
         </div>
     </div>
 
-    <!-- Quick Demo Accounts Helper Box -->
+    {{-- ======================================================== --}}
+    {{-- กล่องทางลัดกรอกข้อมูลทดสอบระบบ (Demo Credentials Helper) --}}
+    {{-- อำนวยความสะดวกในการกดคลิกเดียวเพื่อกรอกอีเมลทดสอบให้อาจารย์ดู --}}
+    {{-- ======================================================== --}}
     <div class="mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-900 shadow-sm">
         <div class="font-bold mb-2 flex items-center">
-            <span>🔑 บัญชีทดสอบระบบ (ตามสัญญาข้อตกลง):</span>
+            <span>🔑 บัญชีทดสอบระบบ (คลิกเพื่อกรอกอัตโนมัติ):</span>
         </div>
         <p class="mb-2 text-amber-800">รหัสผ่านทุกบัญชีคือ: <code class="bg-amber-100 px-1.5 py-0.5 rounded font-mono font-bold">password</code></p>
         <div class="grid grid-cols-1 gap-1.5 text-xs">
@@ -66,6 +76,7 @@
     </div>
 </div>
 
+{{-- สคริปต์ JavaScript ช่วยกรอกข้อมูลลงช่อง Input อัตโนมัติ --}}
 <script>
 function fillLogin(email) {
     document.getElementById('email').value = email;

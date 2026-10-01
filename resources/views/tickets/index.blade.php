@@ -1,3 +1,4 @@
+{{-- สืบทอดโครงร่างหลักมาจาก layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'รายการแจ้งซ่อมของฉัน')
@@ -5,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
 
-    <!-- Header & Action Button -->
+    <!-- ส่วนหัวและปุ่มสร้างงานใหม่ -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900">รายการแจ้งซ่อมของฉัน</h1>
@@ -18,9 +19,10 @@
         </div>
     </div>
 
-    <!-- Filter & Search Card -->
+    <!-- แผงค้นหาและตัวกรอง (Filter Box) ส่งค่าผ่าน GET Method -->
     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <form action="{{ route('tickets.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {{-- ตัวกรองตามสถานะงาน --}}
             <div>
                 <label for="status" class="block text-xs font-medium text-slate-600 mb-1">กรองตามสถานะ</label>
                 <select name="status" id="status" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500">
@@ -35,6 +37,7 @@
                 </select>
             </div>
 
+            {{-- ตัวกรองตามหมวดหมู่งาน --}}
             <div>
                 <label for="category_id" class="block text-xs font-medium text-slate-600 mb-1">หมวดหมู่งาน</label>
                 <select name="category_id" id="category_id" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500">
@@ -47,6 +50,7 @@
                 </select>
             </div>
 
+            {{-- ปุ่มกดค้นหาและปุ่มล้างค่าตัวกรอง --}}
             <div class="flex items-end space-x-2">
                 <button type="submit" class="flex-1 py-2 px-4 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-sm font-medium transition">
                     ค้นหา
@@ -60,7 +64,7 @@
         </form>
     </div>
 
-    <!-- Tickets Table / List -->
+    <!-- ตารางแสดงรายการคำขอแจ้งซ่อม (Tickets Table) -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         @if($tickets->count() > 0)
             <div class="overflow-x-auto">
@@ -78,6 +82,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
+                        {{-- วนลูปแสดงข้อมูลคำขอแจ้งซ่อมแต่ละรายการ --}}
                         @foreach($tickets as $ticket)
                             <tr class="hover:bg-slate-50 transition">
                                 <td class="py-3.5 px-4 font-mono font-medium text-indigo-600 whitespace-nowrap">
@@ -121,11 +126,12 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
+            <!-- การแบ่งหน้า (Pagination Links) -->
             <div class="p-4 border-t border-slate-200">
                 {{ $tickets->links() }}
             </div>
         @else
+            <!-- กรณีไม่มีข้อมูลแจ้งซ่อม -->
             <div class="py-12 text-center">
                 <span class="text-4xl">📭</span>
                 <p class="text-slate-600 font-medium mt-3">ยังไม่มีรายการแจ้งซ่อม</p>

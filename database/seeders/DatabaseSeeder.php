@@ -10,14 +10,27 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Class DatabaseSeeder
+ * คลาสสำหรับจำลองข้อมูลเริ่มต้นลงฐานข้อมูล (Database Seeder)
+ * ข้อมูลที่จำลองประกอบด้วย:
+ * 1. ผู้ใช้งานทดสอบครบ 3 กลุ่มบทบาท (Admin, Technician 2 คน, User) รหัสผ่าน 'password'
+ * 2. หมวดหมู่งานซ่อมบำรุง 5 หมวดหมู่หลัก
+ * 3. ตัวอย่างงานแจ้งซ่อมครบทุกสถานะ Lifecycle (Pending, Assigned, In Progress, Completed, Closed)
+ *    เพื่อให้หน้ารายงาน Dashboard สถิติ และการทดสอบระบบสมบูรณ์ตั้งแต่วินาทีแรกที่ติดตั้ง
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * ดำเนินการสร้างข้อมูลจำลองลงฐานข้อมูล
      */
     public function run(): void
     {
-        // 1. Create Default Users according to contract
+        // ==========================================
+        // 1. สร้างบัญชีผู้ใช้งานทดสอบ (Default Users)
+        // ==========================================
+
+        // 1.1 บัญชีผู้ดูแลระบบ (Admin)
         $admin = User::firstOrCreate(
             ['email' => 'admin@repair.test'],
             [
@@ -29,6 +42,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 1.2 บัญชีช่างซ่อมคนที่ 1 (Technician 1)
         $tech1 = User::firstOrCreate(
             ['email' => 'tech@repair.test'],
             [
@@ -40,6 +54,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 1.3 บัญชีช่างซ่อมคนที่ 2 (Technician 2)
         $tech2 = User::firstOrCreate(
             ['email' => 'tech2@repair.test'],
             [
@@ -51,6 +66,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 1.4 บัญชีผู้ใช้งานทั่วไป (User)
         $user = User::firstOrCreate(
             ['email' => 'user@repair.test'],
             [
@@ -62,7 +78,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Create Categories
+        // ==========================================
+        // 2. สร้างหมวดหมู่งานซ่อมบำรุง (Categories)
+        // ==========================================
         $categoriesData = [
             [
                 'name' => 'ระบบไฟฟ้าและแสงสว่าง',
@@ -96,9 +114,11 @@ class DatabaseSeeder extends Seeder
             $categories[] = Category::firstOrCreate(['name' => $catData['name']], $catData);
         }
 
-        // 3. Create Sample Tickets for Dashboard & Testing
+        // ==========================================
+        // 3. จำลองงานแจ้งซ่อมครบทุกสถานะ (Ticket Lifecycle States)
+        // ==========================================
 
-        // Ticket 1: Pending (รอดำเนินการ)
+        // เคสที่ 1: สถานะ "รอดำเนินการ" (Pending) - รอแอดมินมอบหมายช่าง
         $t1 = RepairRequest::firstOrCreate(
             ['ticket_number' => 'REP-202610-0001'],
             [
@@ -120,7 +140,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Ticket 2: Assigned (มอบหมายช่างแล้ว)
+        // เคสที่ 2: สถานะ "มอบหมายช่างแล้ว" (Assigned) - แอดมินจ่ายงานให้ช่างสมชาย
         $t2 = RepairRequest::firstOrCreate(
             ['ticket_number' => 'REP-202610-0002'],
             [
@@ -144,7 +164,7 @@ class DatabaseSeeder extends Seeder
             ['user_id' => $admin->id, 'status_from' => 'pending', 'comment' => 'แอดมินมอบหมายงานให้ช่างสมชายเข้าตรวจสอบ']
         );
 
-        // Ticket 3: In Progress (กำลังซ่อม)
+        // เคสที่ 3: สถานะ "กำลังดำเนินการ" (In Progress) - ช่างกดรับงานและเข้าตรวจสอบหน้างาน
         $t3 = RepairRequest::firstOrCreate(
             ['ticket_number' => 'REP-202610-0003'],
             [
@@ -164,7 +184,7 @@ class DatabaseSeeder extends Seeder
             ['user_id' => $tech1->id, 'status_from' => 'assigned', 'comment' => 'ช่างเข้าตรวจสอบหน้างาน วัดระดับน้ำยาแอร์']
         );
 
-        // Ticket 4: Completed (ซ่อมเสร็จ รอประเมิน)
+        // เคสที่ 4: สถานะ "ซ่อมเสร็จสิ้น" (Completed) - ช่างบันทึกอะไหล่และค่าใช้จ่าย รอผู้ใช้ประเมินดาว
         $t4 = RepairRequest::firstOrCreate(
             ['ticket_number' => 'REP-202610-0004'],
             [
@@ -187,7 +207,7 @@ class DatabaseSeeder extends Seeder
             ['user_id' => $tech2->id, 'status_from' => 'in_progress', 'comment' => 'ซ่อมเสร็จสิ้น ทดสอบการใช้งานเรียบร้อย']
         );
 
-        // Ticket 5: Closed with Review (ปิดงาน พร้อมรีวิว)
+        // เคสที่ 5: สถานะ "ปิดงานเรียบร้อย" (Closed) - ผู้ใช้ตรวจรับงานและประเมินความพึงพอใจ 5 ดาว
         $t5 = RepairRequest::firstOrCreate(
             ['ticket_number' => 'REP-202610-0005'],
             [

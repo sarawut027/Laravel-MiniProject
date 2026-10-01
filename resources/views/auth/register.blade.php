@@ -1,3 +1,4 @@
+{{-- สืบทอดโครงร่างหลักมาจาก layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'สมัครสมาชิก')
@@ -10,9 +11,11 @@
             <p class="text-xs text-slate-500 mt-1">สำหรับพนักงาน / ผู้ใช้งานทั่วไปเพื่อแจ้งซ่อมอุปกรณ์</p>
         </div>
 
+        {{-- ฟอร์มสมัครสมาชิก ส่งข้อมูลไปยัง route('register') ผ่าน POST method --}}
         <form action="{{ route('register') }}" method="POST" class="space-y-4">
             @csrf
 
+            <!-- ฟิลด์ชื่อ-นามสกุล -->
             <div>
                 <label for="name" class="block text-sm font-medium text-slate-700 mb-1">ชื่อ-นามสกุล <span class="text-rose-500">*</span></label>
                 <input type="text" name="name" id="name" value="{{ old('name') }}" required autofocus
@@ -20,6 +23,7 @@
                     placeholder="นายสมชาย ใจดี">
             </div>
 
+            <!-- ฟิลด์อีเมล -->
             <div>
                 <label for="email" class="block text-sm font-medium text-slate-700 mb-1">อีเมล <span class="text-rose-500">*</span></label>
                 <input type="email" name="email" id="email" value="{{ old('email') }}" required
@@ -27,6 +31,7 @@
                     placeholder="somchai@example.com">
             </div>
 
+            <!-- ฟิลด์เบอร์โทรศัพท์ -->
             <div>
                 <label for="phone" class="block text-sm font-medium text-slate-700 mb-1">เบอร์โทรศัพท์ติดต่อ</label>
                 <input type="tel" name="phone" id="phone" value="{{ old('phone') }}"
@@ -34,6 +39,7 @@
                     placeholder="08X-XXX-XXXX">
             </div>
 
+            <!-- ฟิลด์แผนก / สังกัด -->
             <div>
                 <label for="department" class="block text-sm font-medium text-slate-700 mb-1">แผนก / สังกัด / ฝ่าย</label>
                 <input type="text" name="department" id="department" value="{{ old('department') }}"
@@ -41,6 +47,7 @@
                     placeholder="ฝ่ายบุคคลและการเงิน">
             </div>
 
+            <!-- ฟิลด์รหัสผ่าน -->
             <div>
                 <label for="password" class="block text-sm font-medium text-slate-700 mb-1">รหัสผ่าน <span class="text-rose-500">*</span></label>
                 <input type="password" name="password" id="password" required
@@ -48,6 +55,7 @@
                     placeholder="อย่างน้อย 8 ตัวอักษร">
             </div>
 
+            <!-- ฟิลด์ยืนยันรหัสผ่าน (ต้องตรงกับ password) -->
             <div>
                 <label for="password_confirmation" class="block text-sm font-medium text-slate-700 mb-1">ยืนยันรหัสผ่าน <span class="text-rose-500">*</span></label>
                 <input type="password" name="password_confirmation" id="password_confirmation" required
@@ -55,6 +63,7 @@
                     placeholder="กรอกรหัสผ่านซ้ำอีกครั้ง">
             </div>
 
+            <!-- ปุ่มกดยืนยันการสมัคร -->
             <button type="submit"
                 class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-lg shadow-sm transition">
                 ยืนยันการสมัครสมาชิก

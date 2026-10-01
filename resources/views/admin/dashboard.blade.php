@@ -1,3 +1,4 @@
+{{-- สืบทอดโครงร่างหลักมาจาก layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'แดชบอร์ดสรุปสถิติ (Admin Dashboard)')
@@ -5,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
 
-    <!-- Header -->
+    <!-- ส่วนหัวแดชบอร์ด -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900">📊 แดชบอร์ดสรุปสถิติงานซ่อมบำรุง</h1>
@@ -18,10 +19,12 @@
         </div>
     </div>
 
-    <!-- 5 KPI Stat Cards (Matching Contract) -->
+    {{-- ======================================================== --}}
+    {{-- การ์ดสรุปตัวเลขสถิติ 5 ตัวชี้วัด (5 KPI Stat Cards) --}}
+    {{-- ======================================================== --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
-        <!-- Card 1: Total -->
+        <!-- การ์ด 1: งานทั้งหมด (Total Tickets) -->
         <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <div>
                 <span class="text-xs font-semibold text-slate-500 block uppercase">งานทั้งหมด</span>
@@ -33,7 +36,7 @@
             </div>
         </div>
 
-        <!-- Card 2: Pending -->
+        <!-- การ์ด 2: รอดำเนินการ (Pending) -->
         <div class="bg-white p-5 rounded-xl border border-yellow-200 shadow-sm flex items-center justify-between">
             <div>
                 <span class="text-xs font-semibold text-yellow-700 block uppercase">รอดำเนินการ</span>
@@ -45,7 +48,7 @@
             </div>
         </div>
 
-        <!-- Card 3: In Progress -->
+        <!-- การ์ด 3: กำลังดำเนินการ (In Progress) -->
         <div class="bg-white p-5 rounded-xl border border-blue-200 shadow-sm flex items-center justify-between">
             <div>
                 <span class="text-xs font-semibold text-blue-700 block uppercase">กำลังดำเนินการ</span>
@@ -57,7 +60,7 @@
             </div>
         </div>
 
-        <!-- Card 4: Completed -->
+        <!-- การ์ด 4: ซ่อมเสร็จสิ้น (Completed) -->
         <div class="bg-white p-5 rounded-xl border border-emerald-200 shadow-sm flex items-center justify-between">
             <div>
                 <span class="text-xs font-semibold text-emerald-700 block uppercase">ซ่อมเสร็จสิ้น</span>
@@ -69,7 +72,7 @@
             </div>
         </div>
 
-        <!-- Card 5: Average Rating -->
+        <!-- การ์ด 5: คะแนนความพึงพอใจเฉลี่ย (Average Rating) -->
         <div class="bg-white p-5 rounded-xl border border-amber-200 shadow-sm flex items-center justify-between">
             <div>
                 <span class="text-xs font-semibold text-amber-700 block uppercase">คะแนนเฉลี่ย</span>
@@ -86,10 +89,12 @@
 
     </div>
 
-    <!-- Charts & Breakdown Section -->
+    {{-- ======================================================== --}}
+    {{-- กราฟและการกระจายตัวของข้อมูล (Charts & Breakdown) --}}
+    {{-- ======================================================== --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Chart Card 1: By Category -->
+        <!-- ชาร์ต 1: สถิติตามหมวดหมู่ (CSS Progress Bar) -->
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
                 📁 สถิติงานซ่อมแยกตามหมวดหมู่
@@ -113,7 +118,7 @@
             </div>
         </div>
 
-        <!-- Chart Card 2: By Status -->
+        <!-- ชาร์ต 2: สัดส่วนสถานะงานในระบบ (Status Breakdown Cards) -->
         <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
                 🔄 สัดส่วนสถานะงานในระบบ
@@ -148,7 +153,9 @@
 
     </div>
 
-    <!-- Recent 5 Tickets Table -->
+    {{-- ======================================================== --}}
+    {{-- ตารางงานแจ้งซ่อมล่าสุด 5 รายการ (Recent 5 Tickets) --}}
+    {{-- ======================================================== --}}
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-4 border-b border-slate-100 flex items-center justify-between">
             <h2 class="text-base font-bold text-slate-900">
@@ -173,6 +180,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
+                    {{-- วนลูปแสดงงานล่าสุด 5 รายการ --}}
                     @forelse($recentTickets as $ticket)
                         <tr class="hover:bg-slate-50 transition">
                             <td class="py-3 px-4 font-mono font-medium text-indigo-600 whitespace-nowrap">

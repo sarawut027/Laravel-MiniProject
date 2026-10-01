@@ -1,14 +1,30 @@
 <?php
 
+namespace App\Http\Controllers;
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class RepairRequest
+ * โมเดลหลักสำหรับจัดการตาราง `repair_requests` (คำขอแจ้งซ่อม)
+ * เก็บข้อมูล:
+ * - รหัสคำขอ (ticket_number)
+ * - ผู้แจ้ง (user_id), หมวดหมู่ (category_id), ช่างที่ดูแล (assigned_to)
+ * - หัวข้อ, สถานที่, อาการ, ความเร่งด่วน, สถานะ
+ * - รูปภาพก่อนซ่อม (image_before) และหลังซ่อม (image_after)
+ * - บันทึกจากช่าง (technician_notes) และค่าใช้จ่าย (repair_cost)
+ */
 class RepairRequest extends Model
 {
     use HasFactory;
 
+    /**
+     * ฟิลด์ที่อนุญาตให้บันทึกข้อมูลแบบ Mass Assignment ได้
+     *
+     * @var array<string>
+     */
     protected $fillable = [
         'ticket_number',
         'user_id',
@@ -27,6 +43,11 @@ class RepairRequest extends Model
         'image_after',
     ];
 
+    /**
+     * แปลงชนิดข้อมูล (Type Casting) อัตโนมัติเมื่อดึงจากฐานข้อมูล
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -36,31 +57,59 @@ class RepairRequest extends Model
         ];
     }
 
+    // ==========================================
+    // ความสัมพันธ์ระหว่างตาราง (Relationships)
+    // ==========================================
+
+    /**
+     * ความสัมพันธ์: คำขอนี้สร้างโดยผู้ใช้งานคนใด (Many-to-One)
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * ความสัมพันธ์: คำขอนี้อยู่ในหมวดหมู่งานซ่อมใด (Many-to-One)
+     */
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    /**
+     * ความสัมพันธ์: ช่างซ่อมที่ได้รับมอบหมายงานนี้ (Many-to-One)
+     */
     public function technician()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    /**
+     * ความสัมพันธ์: ประวัติการบันทึก Timeline ของคำขอนี้ (One-to-Many)
+     * เรียงตามลำดับเวลาจากเก่าไปใหม่ (oldest)
+     */
     public function logs()
     {
         return $this->hasMany(RepairLog::class, 'repair_request_id')->oldest();
     }
 
+    /**
+     * ความสัมพันธ์: คะแนนประเมินความพึงพอใจ (One-to-One)
+     */
     public function review()
     {
         return $this->hasOne(Review::class, 'repair_request_id');
     }
 
+    // ==========================================
+    // ฟังก์ชันเสริมสำหรับแสดงผลใน Blade (Accessors)
+    // ==========================================
+
+    /**
+     * แปลงรหัสสถานะภาษาอังกฤษให้เป็นข้อความภาษาไทยสวยงาม
+     * เรียกใช้ใน Blade: $ticket->status_label
+     */
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
@@ -75,6 +124,10 @@ class RepairRequest extends Model
         };
     }
 
+    /**
+     * แปลงระดับความเร่งด่วนภาษาอังกฤษให้เป็นข้อความภาษาไทย
+     * เรียกใช้ใน Blade: $ticket->urgency_label
+     */
     public function getUrgencyLabelAttribute(): string
     {
         return match ($this->urgency) {
@@ -86,6 +139,10 @@ class RepairRequest extends Model
         };
     }
 
+    /**
+     * คืนค่า CSS Class ของ Tailwind สำหรับ Badge สถานะงาน
+     * เรียกใช้ใน Blade: $ticket->status_badge_class
+     */
     public function getStatusBadgeClassAttribute(): string
     {
         return match ($this->status) {
@@ -100,6 +157,10 @@ class RepairRequest extends Model
         };
     }
 
+    /**
+     * คืนค่า CSS Class ของ Tailwind สำหรับ Badge ระดับความเร่งด่วน
+     * เรียกใช้ใน Blade: $ticket->urgency_badge_class
+     */
     public function getUrgencyBadgeClassAttribute(): string
     {
         return match ($this->urgency) {

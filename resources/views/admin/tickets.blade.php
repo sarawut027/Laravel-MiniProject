@@ -1,3 +1,4 @@
+{{-- สืบทอดโครงร่างหลักมาจาก layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'จัดการงานซ่อมทั้งหมด (Admin)')
@@ -5,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
 
-    <!-- Header -->
+    <!-- ส่วนหัวหน้าจัดการงานซ่อม -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-slate-900">📑 จัดการงานแจ้งซ่อมทั้งหมด</h1>
@@ -18,11 +19,14 @@
         </div>
     </div>
 
-    <!-- Advanced Filter & Search Box -->
+    {{-- ======================================================== --}}
+    {{-- แผงค้นหาและตัวกรองขั้นสูง (Advanced Multi-Filter Box) --}}
+    {{-- ค้นหาด้วยคีย์เวิร์ด, สถานะ, หมวดหมู่, และช่างผู้รับผิดชอบ --}}
+    {{-- ======================================================== --}}
     <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
         <form action="{{ route('admin.tickets.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             
-            <!-- Search Text -->
+            <!-- 1. ค้นหาข้อความอิสระ (Search Keyword) -->
             <div class="lg:col-span-2">
                 <label for="search" class="block text-xs font-medium text-slate-600 mb-1">ค้นหา (รหัส, หัวข้อ, สถานที่, ผู้แจ้ง)</label>
                 <input type="text" name="search" id="search" value="{{ request('search') }}"
@@ -30,7 +34,7 @@
                     placeholder="พิมพ์คำค้นหา...">
             </div>
 
-            <!-- Filter Status -->
+            <!-- 2. กรองตามสถานะงาน (Status Filter) -->
             <div>
                 <label for="status" class="block text-xs font-medium text-slate-600 mb-1">สถานะงาน</label>
                 <select name="status" id="status" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500">
@@ -45,7 +49,7 @@
                 </select>
             </div>
 
-            <!-- Filter Category -->
+            <!-- 3. กรองตามหมวดหมู่งาน (Category Filter) -->
             <div>
                 <label for="category_id" class="block text-xs font-medium text-slate-600 mb-1">หมวดหมู่งาน</label>
                 <select name="category_id" id="category_id" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500">
@@ -58,7 +62,7 @@
                 </select>
             </div>
 
-            <!-- Filter Technician -->
+            <!-- 4. กรองตามช่างผู้รับผิดชอบ (Technician Filter) -->
             <div>
                 <label for="assigned_to" class="block text-xs font-medium text-slate-600 mb-1">ช่างผู้รับผิดชอบ</label>
                 <select name="assigned_to" id="assigned_to" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-indigo-500">
@@ -71,7 +75,7 @@
                 </select>
             </div>
 
-            <!-- Submit Button -->
+            <!-- ปุ่มกดส่งการค้นหาและปุ่มล้างตัวกรอง -->
             <div class="lg:col-span-5 flex justify-end space-x-2 pt-2 border-t border-slate-100">
                 @if(request()->hasAny(['search', 'status', 'category_id', 'urgency', 'assigned_to']))
                     <a href="{{ route('admin.tickets.index') }}" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition">
@@ -86,7 +90,7 @@
         </form>
     </div>
 
-    <!-- Tickets Table -->
+    <!-- ตารางแสดงรายการงานแจ้งซ่อมทั้งหมด (Admin Tickets Table) -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         @if($tickets->count() > 0)
             <div class="overflow-x-auto">
@@ -105,6 +109,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
+                        {{-- วนลูปแสดงรายการงานทั้งหมด --}}
                         @foreach($tickets as $ticket)
                             <tr class="hover:bg-slate-50 transition">
                                 <td class="py-3.5 px-4 font-mono font-medium text-indigo-600 whitespace-nowrap">
@@ -158,11 +163,12 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
+            <!-- การแบ่งหน้า (Pagination) -->
             <div class="p-4 border-t border-slate-200">
                 {{ $tickets->links() }}
             </div>
         @else
+            <!-- กรณีค้นหาแล้วไม่พบข้อมูล -->
             <div class="py-12 text-center">
                 <span class="text-4xl">🔍</span>
                 <p class="text-slate-600 font-medium mt-3">ไม่พบรายการงานซ่อมตามเงื่อนไขที่ค้นหา</p>

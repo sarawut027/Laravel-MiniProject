@@ -1,3 +1,4 @@
+{{-- สืบทอดโครงร่างหลักมาจาก layouts/app.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'รายละเอียดใบแจ้งซ่อม #' . $ticket->ticket_number)
@@ -5,9 +6,12 @@
 @section('content')
 <div class="space-y-6 max-w-5xl mx-auto">
 
-    <!-- Top Navigation & Status Bar -->
+    {{-- ======================================================== --}}
+    {{-- แถบส่วนหัว: ปุ่มย้อนกลับ, รหัส Ticket, และป้ายสถานะ --}}
+    {{-- ======================================================== --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <div class="flex items-center space-x-3">
+            {{-- ปุ่มย้อนกลับตามบทบาทของผู้ใช้งาน --}}
             <a href="{{ auth()->user()->role === 'admin' ? route('admin.tickets.index') : (auth()->user()->role === 'technician' ? route('tech.tasks') : route('tickets.index')) }}"
                 class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition">
                 ← กลับหน้ารายการ
@@ -18,6 +22,7 @@
             </div>
         </div>
 
+        {{-- แสดงป้ายความเร่งด่วนและสถานะงาน โดยดึง Accessor Badge Class จาก Model --}}
         <div class="flex items-center space-x-2">
             <span class="px-2.5 py-1 text-xs rounded-full {{ $ticket->urgency_badge_class }}">
                 ความเร่งด่วน: {{ $ticket->urgency_label }}
@@ -28,12 +33,17 @@
         </div>
     </div>
 
+    {{-- ======================================================== --}}
+    {{-- โครงสร้าง 2 คอลัมน์ (Grid Layout) --}}
+    {{-- ซ้าย (2 Cols): รายละเอียดงาน & รูปภาพ Before/After --}}
+    {{-- ขวา (1 Col): แผงควบคุมตามบทบาท & ประวัติ Timeline --}}
+    {{-- ======================================================== --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- Left Column: Details & Images (2 cols) -->
+        <!-- คอลัมน์ซ้าย (ฝั่งข้อมูลรายละเอียดและรูปภาพ) -->
         <div class="lg:col-span-2 space-y-6">
 
-            <!-- Card 1: Ticket Info -->
+            <!-- การ์ดที่ 1: ข้อมูลทั่วไปของงานแจ้งซ่อม -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <h1 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
                     {{ $ticket->title }}
@@ -79,14 +89,14 @@
                 </div>
             </div>
 
-            <!-- Card 2: Before & After Images -->
+            <!-- การ์ดที่ 2: แสดงรูปภาพ Before (ก่อนซ่อม) และ After (หลังซ่อมเสร็จ) -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
                     📷 รูปภาพประกอบงานซ่อม (Before & After)
                 </h2>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Image Before -->
+                    <!-- รูปภาพก่อนซ่อม (Before) -->
                     <div class="border border-slate-200 rounded-lg p-3 bg-slate-50 text-center">
                         <span class="text-xs font-semibold text-slate-600 block mb-2">📸 รูปภาพก่อนซ่อม (ชำรุด)</span>
                         @if($ticket->image_before)
@@ -102,7 +112,7 @@
                         @endif
                     </div>
 
-                    <!-- Image After -->
+                    <!-- รูปภาพหลังซ่อม (After) -->
                     <div class="border border-slate-200 rounded-lg p-3 bg-slate-50 text-center">
                         <span class="text-xs font-semibold text-emerald-700 block mb-2">✨ รูปภาพหลังซ่อมเสร็จสิ้น</span>
                         @if($ticket->image_after)
@@ -119,7 +129,7 @@
                     </div>
                 </div>
 
-                <!-- Technician Notes & Cost if completed -->
+                <!-- ข้อมูลบันทึกจากช่าง และค่าใช้จ่าย (แสดงเมื่อซ่อมเสร็จ) -->
                 @if($ticket->technician_notes || $ticket->repair_cost > 0)
                     <div class="mt-4 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-xs">
                         <span class="font-bold text-emerald-900 block mb-1">🛠️ ข้อมูลบันทึกจากช่างซ่อม:</span>
@@ -135,7 +145,7 @@
                 @endif
             </div>
 
-            <!-- Card 3: Review Section -->
+            <!-- การ์ดที่ 3: ผลการประเมินความพึงพอใจ (Review) แสดงเมื่องานปิดแล้ว -->
             @if($ticket->review)
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 mb-3 flex items-center justify-between">
@@ -158,12 +168,12 @@
 
         </div>
 
-        <!-- Right Column: Actions & Timeline (1 col) -->
+        <!-- คอลัมน์ขวา (แผงควบคุมสิทธิ์ตาม Role และประวัติ Timeline) -->
         <div class="space-y-6">
 
-            <!-- ACTION PANEL (Based on Role & Status) -->
-
-            <!-- 1. User Cancel Action (Only when pending) -->
+            {{-- ------------------------------------------------------------- --}}
+            {{-- แผงควบคุม 1: ขอยกเลิกคำขอ (เฉพาะ User เจ้าของเรื่อง และตอน Pending) --}}
+            {{-- ------------------------------------------------------------- --}}
             @if(auth()->user()->role === 'user' && $ticket->user_id === auth()->id() && $ticket->status === 'pending')
                 <div class="bg-white p-5 rounded-xl border border-rose-200 shadow-sm">
                     <h3 class="text-sm font-bold text-rose-800 mb-2">ขอยกเลิกคำขอแจ้งซ่อม</h3>
@@ -177,7 +187,9 @@
                 </div>
             @endif
 
-            <!-- 2. User Review Action (When completed and no review yet) -->
+            {{-- ------------------------------------------------------------- --}}
+            {{-- แผงควบคุม 2: ฟอร์มประเมินความพึงพอใจ (User ให้คะแนนเมื่องาน completed) --}}
+            {{-- ------------------------------------------------------------- --}}
             @if(auth()->user()->role === 'user' && $ticket->user_id === auth()->id() && $ticket->status === 'completed' && !$ticket->review)
                 <div class="bg-white p-5 rounded-xl border border-amber-200 shadow-sm">
                     <h3 class="text-sm font-bold text-amber-900 mb-2">⭐ ประเมินความพึงพอใจและปิดงาน</h3>
@@ -209,7 +221,9 @@
                 </div>
             @endif
 
-            <!-- 3. Admin Assign Action -->
+            {{-- ------------------------------------------------------------- --}}
+            {{-- แผงควบคุม 3: ฟอร์มแอดมินมอบหมายงาน (Admin Assign Technician) --}}
+            {{-- ------------------------------------------------------------- --}}
             @if(auth()->user()->role === 'admin')
                 <div class="bg-white p-5 rounded-xl border border-indigo-200 shadow-sm">
                     <h3 class="text-sm font-bold text-indigo-900 mb-2">👑 มอบหมายงานให้ช่าง (Admin)</h3>
@@ -239,7 +253,9 @@
                 </div>
             @endif
 
-            <!-- 4. Technician Status Update Action -->
+            {{-- ------------------------------------------------------------- --}}
+            {{-- แผงควบคุม 4: ฟอร์มอัปเดตสถานะงานของช่าง (Technician Status Update) --}}
+            {{-- ------------------------------------------------------------- --}}
             @if((auth()->user()->role === 'technician' && $ticket->assigned_to === auth()->id()) || auth()->user()->role === 'admin')
                 <div class="bg-white p-5 rounded-xl border border-blue-200 shadow-sm">
                     <h3 class="text-sm font-bold text-blue-900 mb-2">🔧 อัปเดตสถานะงานซ่อม</h3>
@@ -276,16 +292,19 @@
                 </div>
             @endif
 
-            <!-- Card: Timeline / Audit Logs -->
+            {{-- ------------------------------------------------------------- --}}
+            {{-- แผงควบคุม 5: ประวัติการดำเนินการ (Timeline Audit Logs) --}}
+            {{-- ------------------------------------------------------------- --}}
             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                 <h3 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
                     ⏱️ ประวัติการดำเนินการ (Timeline)
                 </h3>
 
                 <div class="relative border-l-2 border-slate-200 ml-3 space-y-5 text-xs">
+                    {{-- วนลูปแสดงประวัติ Timeline เรียงจากเก่าไปใหม่ --}}
                     @forelse($ticket->logs as $log)
                         <div class="relative pl-5">
-                            <!-- Bullet Icon -->
+                            <!-- จุดกลมแสดงสถานะบนเส้น Timeline -->
                             <div class="absolute -left-[9px] top-0.5 w-4 h-4 rounded-full bg-white border-2 border-indigo-600"></div>
 
                             <div>
