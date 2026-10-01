@@ -47,17 +47,22 @@ Route::middleware(['auth'])->group(function () {
         };
     })->name('dashboard');
 
-    // Ticket Show / Details (Shared between User, Assigned Technician, and Admin)
-    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
-
-    // 1. User / Requester Routes (role:user)
-    Route::middleware(['role:user'])->group(function () {
+    // 1. User / Requester Routes (role:user,admin)
+    Route::middleware(['role:user,admin'])->group(function () {
         Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
         Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
         Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    });
+
+    Route::middleware(['role:user'])->group(function () {
         Route::post('/tickets/{ticket}/cancel', [TicketController::class, 'cancel'])->name('tickets.cancel');
         Route::post('/tickets/{ticket}/review', [TicketController::class, 'review'])->name('tickets.review');
     });
+
+    // Ticket Show / Details (Shared between User, Assigned Technician, and Admin)
+    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])
+        ->whereNumber('ticket')
+        ->name('tickets.show');
 
     // 2. Technician Routes (role:technician)
     Route::middleware(['role:technician'])->prefix('technician')->group(function () {
